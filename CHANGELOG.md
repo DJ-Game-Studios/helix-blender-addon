@@ -1,0 +1,36 @@
+# Changelog
+
+## v0.3.0 (2026-04-12)
+
+### Added
+- **Helix Package (.helix) import** — one-click full hero import with gear, scale, animations
+- **Import presets** — Full Preview, Animation Work, Reference, Custom
+- **Selective gear import** — `skip_parts` field to exclude specific parts
+- **Animation filtering** — All / Engine Only / Non-Additive modes
+- **Hero switcher grid** — sidebar panel showing all 120+ available packages, click to load
+- **Gear visibility toggles** — per-part show/hide with attach bone display
+- **Animation playback controls** — play/stop buttons with loop type badges
+- **Display controls** — Textured/Flat/X-Ray viewport modes, scale reset, skeleton cleanup
+- **Export Helix Package (.helix)** — re-export with enriched manifest
+- **Export presets** — Engine / Animation Only
+- **Batch render operator** — render all packages for visual QA
+- **Bone alias support** — auto-renames vertex groups using manifest `bone_aliases`
+- **Static prop detection** — parts with <=2 joints get bone-parented instead of skin-retargeted
+
+### Fixed
+- World transform preserved during gear reparenting (parts no longer float away)
+- Blender 5.x compatibility (`export_colors` parameter removed)
+- `guess_original_bind_pose=False` enforced across all import paths
+
+## v0.2.0 (2026-04-11)
+
+### Added
+- Basic GLTF import/export operators
+- Animation template generator (15 MMORPG animations)
+- Naming enforcer sidebar panel
+- Post-export validation via `validate_skibidi_export.py`
+
+## v0.1.0 (2026-03-30)
+
+- Initial addon structure with bl_info
+- Import operator with Source 2 settings
