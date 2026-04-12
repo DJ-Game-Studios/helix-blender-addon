@@ -41,19 +41,34 @@ Blender addon for the Helix MMORPG 3D asset pipeline. Import `.helix` hero packa
 
 ## Installation
 
-### Option A: Symlink (development)
+### Option A: Download from Releases (recommended)
+
+> **Do NOT use the green "Code > Download ZIP" button** — that downloads the repo, not the addon.
+> Use the Releases page instead.
+
+1. Go to [**Releases**](https://github.com/djmsqrvve/helix-blender-addon/releases/latest)
+2. Download **`helix_blender_tools_v0.3.0.zip`** from the Assets section
+3. In Blender: **Edit > Preferences > Add-ons > Install from Disk**
+4. Select the downloaded `.zip`
+5. Enable: search **"Helix"** and check the box
+
+### Option B: Install from repo source
+
+If you cloned or downloaded this repo, you can install from the included source:
 
 ```bash
-ln -s /path/to/helix-blender-tools/addon \
-  ~/.config/blender/5.1/scripts/addons/helix_blender_tools
+# From the repo root:
+cd helix_blender_tools
+zip -r ../helix_blender_tools.zip .
+# Then install helix_blender_tools.zip in Blender
 ```
 
-### Option B: Download from Releases
+Or symlink for development:
 
-1. Download the latest `.zip` from [Releases](https://github.com/djmsqrvve/helix-blender-addon/releases)
-2. In Blender: **Edit > Preferences > Add-ons > Install from Disk**
-3. Select the downloaded `.zip`
-4. Enable: search **"Helix"** and check the box
+```bash
+ln -s /path/to/helix-blender-addon/helix_blender_tools \
+  ~/.config/blender/5.1/scripts/addons/helix_blender_tools
+```
 
 ### Verify Installation
 
@@ -62,6 +77,14 @@ In Blender's Python console:
 import addon_utils
 addon_utils.check('helix_blender_tools')  # Should return (True, True)
 ```
+
+### Troubleshooting
+
+| Problem | Cause | Fix |
+|---------|-------|-----|
+| "Missing manifest" on install | Used "Code > Download ZIP" instead of Releases | Download from [Releases](https://github.com/djmsqrvve/helix-blender-addon/releases/latest) |
+| Addon doesn't appear after install | ZIP has wrong folder structure | Ensure ZIP contains `helix_blender_tools/__init__.py` at the root |
+| Module not found | Installed as wrong module name | Uninstall, then reinstall with the correct ZIP |
 
 ## What is a .helix File?
 
