@@ -4,6 +4,12 @@ Blender addon for the Helix MMORPG 3D asset pipeline. Import `.helix` hero packa
 
 **Requires Blender 5.0+** (5.1 recommended)
 
+## Status
+
+**Maintained.** Version 0.3.0 is the current shipped addon. This repository remains the
+installable Blender product, but it has no active implementation queue as of 2026-07-18.
+See [`AGENTS.md`](AGENTS.md) for the maintainer cold start.
+
 ## Features
 
 ### Import
@@ -108,26 +114,20 @@ Download `.helix` packages from [helix-viewer-releases](https://github.com/djmsq
 
 The full library of 124 heroes is built from the [helix-tools](https://github.com/djmsqrvve/helix-tools) pipeline.
 
-## CLI Scripts
+## Automation companions
 
-6 headless Blender scripts for automation (no GUI needed):
-
-| Script | What It Does |
-|--------|-------------|
-| `blender_import_test.py` | Import + report bones/meshes/animations as JSON |
-| `blender_render_preview.py` | Import + auto-camera + EEVEE render → PNG |
-| `blender_roundtrip_test.py` | Import → export → re-import, diff for data loss |
-| `blender_batch_process.py` | Run import/roundtrip/render across multiple heroes |
-| `blender_create_jump_anims.py` | Generate placeholder jump animations |
-| `blender_open_hero.py` | Interactive import with full gear reparenting |
-
-All scripts use `guess_original_bind_pose=False` for Source 2 GLTF compatibility.
+This checkout does **not** contain the historical headless Blender scripts. Their current
+owner is the independent `helix-tools/helix-blender-tools/scripts/` package in the
+[`helix-tools`](https://github.com/djmsqrvve/helix-tools) repository. The separate
+`helix-blender-tools` repository is an experimental future home for general automation, but
+no migration should be assumed until the files and validation are moved deliberately.
 
 ## Related Projects
 
 | Repo | Role |
 |------|------|
 | [helix-tools](https://github.com/djmsqrvve/helix-tools) | Asset pipeline — builds `.helix` packages (private) |
+| `helix-blender-tools` | Experimental standalone home for future general Blender automation; no current runtime dependency. |
 | [helix-viewer-releases](https://github.com/djmsqrvve/helix-viewer-releases) | Standalone 3D viewer + sample packages |
 | [helix_3d](https://github.com/djmsqrvve/helix_3d) | Bevy engine that consumes `.helix` packages (private) |
 
