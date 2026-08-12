@@ -1,136 +1,78 @@
 # Helix Blender Tools
 
-Blender addon for the Helix MMORPG 3D asset pipeline. Import `.helix` hero packages, work with animations, export for the engine.
+A Blender addon for importing, inspecting, animating, and exporting `.helix` character packages.
 
-**Requires Blender 5.0+** (5.1 recommended)
-
-## Status
-
-**Maintained.** Version 0.3.0 is the current shipped addon. This repository remains the
-installable Blender product, but it has no active implementation queue as of 2026-07-18.
-See [`AGENTS.md`](AGENTS.md) for the maintainer cold start.
+**Current release:** v0.3.0  
+**Requires:** Blender 5.0 or newer; Blender 5.1 is recommended.
 
 ## Features
 
-### Import
-- **File > Import > Helix Package (.helix)** — one-click full hero import with gear attachment, scale, collision hiding
-- **File > Import > Helix GLTF (.gltf/.glb)** — single file with correct Source 2 settings
+- One-click `.helix` package import with gear attachment and scale handling.
+- Direct GLTF/GLB import with Helix pipeline defaults.
+- Import presets for preview, animation, reference, and custom workflows.
+- Gear visibility controls and attachment-bone inspection.
+- Animation playback with loop and one-shot metadata.
+- Textured, flat, X-ray, and skeleton display modes.
+- `.helix` package and GLTF export with validation.
+- Automatic collision-shape hiding and bone-alias handling.
 
-### Import Presets
-| Preset | Gear | Scale | Animations | Use Case |
-|--------|------|-------|------------|----------|
-| Full Preview | All | Manifest | All | Looking at the hero |
-| Animation Work | None | 100% | Engine only | Animating |
-| Reference | All | Manifest | All | Locked transforms, reference |
-| Custom | Your choice | Your choice | Your choice | Advanced |
+## Install
 
-### Export
-- **File > Export > Helix Package (.helix)** — re-export as .helix with updated manifest
-- **File > Export > Helix GLTF (.gltf)** — GLTF Separate with auto-validation
+> Download the addon from **Releases**. GitHub's green **Code → Download ZIP** archive is the source repository, not an installable addon package.
 
-### Sidebar Panels (View3D > Sidebar > Helix)
+1. Download `helix_blender_tools_v0.3.0.zip` from the [latest release](https://github.com/DJ-Game-Studios/helix-blender-addon/releases/latest).
+2. In Blender, open **Edit → Preferences → Add-ons**.
+3. Choose **Install from Disk** and select the ZIP file.
+4. Search for **Helix** and enable **Helix Blender Tools**.
 
-| Panel | What It Does |
-|-------|-------------|
-| **Hero** | Hero info, bone/anim counts, hero switcher grid (click to load any of 120+ heroes) |
-| **Gear Parts** | Per-part visibility toggles, show/hide all, attach bone display |
-| **Animations** | Engine animation playback with loop/oneshot badges, stop button |
-| **Display** | Viewport modes (Textured/Flat/X-Ray), scale reset, skeleton controls |
-| **Animation Status** | Naming compliance checklist |
+After installation, the addon appears in Blender's import/export menus and in **View3D → Sidebar → Helix**.
 
-### Under the Hood
-- Gear parts are **reparented onto the base armature** (shared skeleton, not separate objects)
-- **Bone aliases** are applied automatically (e.g., `arrow_root` → `Bow1_0`)
-- **Collision shapes** (icosphere/physics meshes) are auto-hidden
-- Manifest metadata stored as **custom properties** on the armature
-- World transforms preserved during reparenting (no floating parts)
-
-## Installation
-
-### Option A: Download from Releases (recommended)
-
-> **Do NOT use the green "Code > Download ZIP" button** — that downloads the repo, not the addon.
-> Use the Releases page instead.
-
-1. Go to [**Releases**](https://github.com/djmsqrvve/helix-blender-addon/releases/latest)
-2. Download **`helix_blender_tools_v0.3.0.zip`** from the Assets section
-3. In Blender: **Edit > Preferences > Add-ons > Install from Disk**
-4. Select the downloaded `.zip`
-5. Enable: search **"Helix"** and check the box
-
-### Option B: Install from repo source
-
-If you cloned or downloaded this repo, you can install from the included source:
-
-```bash
-# From the repo root:
-cd helix_blender_tools
-zip -r ../helix_blender_tools.zip .
-# Then install helix_blender_tools.zip in Blender
-```
-
-Or symlink for development:
-
-```bash
-ln -s /path/to/helix-blender-addon/helix_blender_tools \
-  ~/.config/blender/5.1/scripts/addons/helix_blender_tools
-```
-
-### Verify Installation
+### Verify installation
 
 In Blender's Python console:
+
 ```python
 import addon_utils
-addon_utils.check('helix_blender_tools')  # Should return (True, True)
+addon_utils.check("helix_blender_tools")
 ```
 
-### Troubleshooting
+A successful enabled installation returns `(True, True)`.
 
-| Problem | Cause | Fix |
-|---------|-------|-----|
-| "Missing manifest" on install | Used "Code > Download ZIP" instead of Releases | Download from [Releases](https://github.com/djmsqrvve/helix-blender-addon/releases/latest) |
-| Addon doesn't appear after install | ZIP has wrong folder structure | Ensure ZIP contains `helix_blender_tools/__init__.py` at the root |
-| Module not found | Installed as wrong module name | Uninstall, then reinstall with the correct ZIP |
+## Import a character
 
-## What is a .helix File?
+1. Download a sample package from [Helix 3D Viewer Releases](https://github.com/DJ-Game-Studios/helix-viewer-releases/releases).
+2. In Blender, choose **File → Import → Helix Package (.helix)**.
+3. Select an import preset.
+4. Use the Helix sidebar to inspect gear, animations, scale, and skeleton data.
 
-A `.helix` file is a single-file hero package (ZIP archive) containing:
+| Preset | Gear | Scale | Animations | Best for |
+| --- | --- | --- | --- | --- |
+| Full Preview | All | Manifest | All | Reviewing an assembled character |
+| Animation Work | None | 100% | Engine set | Animation editing |
+| Reference | All | Manifest | All | Locked visual reference |
+| Custom | Selectable | Selectable | Selectable | Advanced workflows |
 
-- `manifest.json` — hero metadata, gear parts with attach bones, animation indices
-- Base model GLTF + binary data
-- Gear part GLTFs (armor, weapons, cape, etc.)
-- Textures (color, normal, specular maps)
+## Export
 
-The addon reads `manifest.json` to know how to assemble the hero — which bones to attach gear to, what scale to apply, which animations are engine-recognized.
+- **File → Export → Helix Package (.helix)** repackages the character with an updated manifest.
+- **File → Export → Helix GLTF (.gltf)** exports validated GLTF assets with pipeline defaults.
 
-See [HELIX_FORMAT_SPEC.md](https://github.com/djmsqrvve/helix-viewer-releases/blob/main/HELIX_FORMAT_SPEC.md) for the full format specification.
+## The `.helix` format
 
-## Sample Packages
+A `.helix` package is a portable archive containing a base model, gear parts, textures, animations, skeleton data, and a manifest that describes assembly and engine metadata.
 
-Download `.helix` packages from [helix-viewer-releases](https://github.com/djmsqrvve/helix-viewer-releases/releases):
+Read the [format specification](https://github.com/DJ-Game-Studios/helix-viewer-releases/blob/main/HELIX_FORMAT_SPEC.md) for the complete schema.
 
-- `drow.helix` — 8 gear parts, 76 animations, 82 joints
-- `axe.helix` — 5 gear parts, 75 animations, 56 joints
+## Troubleshooting
 
-The full library of 124 heroes is built from the [helix-tools](https://github.com/djmsqrvve/helix-tools) pipeline.
+| Problem | Likely cause | Fix |
+| --- | --- | --- |
+| “Missing manifest” during installation | The repository source ZIP was selected | Install the ZIP attached to the latest release |
+| Addon does not appear | The package has the wrong folder structure | Re-download the official release asset |
+| Module not found | The addon was installed under the wrong module name | Remove it and reinstall the official release ZIP |
 
-## Automation companions
-
-This checkout does **not** contain the historical headless Blender scripts. Their current
-owner is the independent `helix-tools/helix-blender-tools/scripts/` package in the
-[`helix-tools`](https://github.com/djmsqrvve/helix-tools) repository. The separate
-`helix-blender-tools` repository is an experimental future home for general automation, but
-no migration should be assumed until the files and validation are moved deliberately.
-
-## Related Projects
-
-| Repo | Role |
-|------|------|
-| [helix-tools](https://github.com/djmsqrvve/helix-tools) | Asset pipeline — builds `.helix` packages (private) |
-| `helix-blender-tools` | Experimental standalone home for future general Blender automation; no current runtime dependency. |
-| [helix-viewer-releases](https://github.com/djmsqrvve/helix-viewer-releases) | Standalone 3D viewer + sample packages |
-| [helix_3d](https://github.com/djmsqrvve/helix_3d) | Bevy engine that consumes `.helix` packages (private) |
+For reproducible problems, [open an issue](https://github.com/DJ-Game-Studios/helix-blender-addon/issues) with your Blender version, operating system, package name, and the full error message.
 
 ## License
 
-MIT License — see [LICENSE](LICENSE).
+[MIT](LICENSE)
