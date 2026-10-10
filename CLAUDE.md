@@ -1,5 +1,7 @@
 # helix-blender-addon maintainer briefing
 
+@AGENTS.md
+
 ## Status
 
 **Maintained, low criticality.** Version 0.3.0 is the current shipped addon. The checkout
