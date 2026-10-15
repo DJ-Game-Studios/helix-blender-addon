@@ -57,6 +57,10 @@ A successful enabled installation returns `(True, True)`.
 - **File → Export → Helix Package (.helix)** repackages the character with an updated manifest.
 - **File → Export → Helix GLTF (.gltf)** exports validated GLTF assets with pipeline defaults.
 
+Source-only export dependency findings and proposed acceptance gates are recorded in
+[the 2026-10-15 installed-export review](docs/reviews/2026-10-15-installed-export-review.md).
+Blender installation and export have not yet been exercised for that review.
+
 ## The `.helix` format
 
 A `.helix` package is a portable archive containing a base model, gear parts, textures, animations, skeleton data, and a manifest that describes assembly and engine metadata.
