@@ -12,31 +12,34 @@ bl_info = {
 }
 
 # ---------------------------------------------------------------------------
-# Animation constants (mirrored from helix_utils/constants.py so the addon
-# works standalone inside Blender without needing helix_utils on sys.path).
+# Animation vocabulary (v3). `_vocab.py` is GENERATED from helix-core
+# helix-anim-vocab by scripts/gen_vocab.py so the addon stays standalone inside
+# Blender; tests/test_vocab.py fails when it drifts.
+#
+# Action names are the vocabulary names themselves (`jump_start`, `walk`),
+# so the packager maps them exactly. The pre-v3 title-case names
+# (`Jump Start`, `Run Backward`) are still recognised through ALIASES.
 # ---------------------------------------------------------------------------
 
-KNOWN_ANIMATIONS = {
-    "idle": {"type": "loop", "priority": "existing", "note": "Already exists for most heroes"},
-    "run": {"type": "loop", "priority": "existing", "note": "Already exists for most heroes"},
-    "walk": {"type": "loop", "priority": 1, "note": "Shift+WASD movement"},
-    "attack": {"type": "oneshot", "priority": "existing", "note": "Already exists for most heroes"},
-    "jump start": {"type": "oneshot", "priority": 2, "note": "Beginning of jump"},
-    "jump in air": {"type": "loop", "priority": 3, "note": "Airborne state"},
-    "jump landing": {"type": "oneshot", "priority": 4, "note": "Landing from jump"},
-    "strafe left": {"type": "loop", "priority": 5, "note": "Lateral movement"},
-    "strafe right": {"type": "loop", "priority": 6, "note": "Lateral movement"},
-    "combat idle": {"type": "loop", "priority": 7, "note": "Combat stance"},
-    "run backward": {"type": "loop", "priority": 8, "note": "Backward movement"},
-    "death": {"type": "oneshot", "priority": "existing", "note": "Already exists for most heroes"},
-    "victory": {"type": "oneshot", "priority": "existing", "note": "Already exists for most heroes"},
-    "stun": {"type": "oneshot", "priority": "existing", "note": "Already exists for most heroes"},
-    "spawn": {"type": "oneshot", "priority": "existing", "note": "Already exists for most heroes"},
-}
+from ._vocab import ALIASES, KNOWN_ANIMATIONS, TEMPLATE_NAMES, VOCAB_VERSION  # noqa: E402
 
-PRIORITY_ANIMATIONS = ["Walk", "Jump Start", "Jump In Air", "Jump Landing"]
+PRIORITY_ANIMATIONS = ["walk", "jump_start", "jump_air", "jump_land"]
 
-ANIMATION_DISPLAY_NAMES = {k: k.title() for k in KNOWN_ANIMATIONS}
+ANIMATION_DISPLAY_NAMES = {k: k.replace("_", " ").title() for k in KNOWN_ANIMATIONS}
+
+
+def vocab_name(action_name: str) -> str | None:
+    """The vocabulary name an action stands for (old spellings and `.N`
+    variants included), or None."""
+    raw = action_name.strip().lower()
+    if raw in ALIASES:
+        return ALIASES[raw]
+    base, _, tail = raw.rpartition(".")
+    if base and tail.isdigit():
+        raw = base
+    raw = ALIASES.get(raw, raw)
+    return raw if raw in KNOWN_ANIMATIONS else None
+
 
 # Import presets
 IMPORT_PRESETS = {
@@ -870,18 +873,17 @@ if _check_blender():
             created = 0
             skipped = 0
 
-            for anim_key, meta in KNOWN_ANIMATIONS.items():
-                display_name = anim_key.title()
-
-                existing = bpy.data.actions.get(display_name)
-                if existing is not None:
+            present = {vocab_name(a.name) for a in bpy.data.actions}
+            for anim_key in TEMPLATE_NAMES:
+                meta = KNOWN_ANIMATIONS[anim_key]
+                if anim_key in present:
                     skipped += 1
                     continue
 
-                action = bpy.data.actions.new(name=display_name)
+                action = bpy.data.actions.new(name=anim_key)
                 action.use_fake_user = True
                 action["helix_type"] = meta["type"]
-                action["helix_priority"] = str(meta["priority"])
+                action["helix_vocab_version"] = VOCAB_VERSION
                 created += 1
 
             self.report(
@@ -1392,7 +1394,6 @@ if _check_blender():
         def draw(self, context):
             layout = self.layout
 
-            known_lower = {k.lower() for k in KNOWN_ANIMATIONS}
             actions = list(bpy.data.actions)
 
             if not actions:
@@ -1402,22 +1403,19 @@ if _check_blender():
             matched = []
             unmatched = []
             for action in actions:
-                if action.name.lower() in known_lower:
+                if vocab_name(action.name):
                     matched.append(action.name)
                 else:
                     unmatched.append(action.name)
 
-            present_lower = {a.name.lower() for a in actions}
-            missing = [
-                name.title() for name in KNOWN_ANIMATIONS
-                if name.lower() not in present_lower
-            ]
+            present = {vocab_name(a.name) for a in actions}
+            missing = [name for name in TEMPLATE_NAMES if name not in present]
 
             # Priority animations status
             box = layout.box()
             box.label(text="Priority Animations", icon="SOLO_ON")
             for pname in PRIORITY_ANIMATIONS:
-                icon = "CHECKMARK" if pname.lower() in present_lower else "X"
+                icon = "CHECKMARK" if pname in present else "X"
                 box.label(text=f"  {pname}", icon=icon)
 
             if matched:
